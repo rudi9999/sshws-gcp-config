@@ -695,8 +695,31 @@ LOG_TEMP=$(mktemp)
 URL_TEMP=$(mktemp)
 
 # 🚀 Ejecutar despliegue en segundo plano
+#(
+#  exec &> "$LOG_TEMP"  # Redirige stdout y stderr dentro del subshell
+#  SERVICE_URL=$(gcloud run deploy "$SERVICE_NAME" \
+#    --image "$IMAGE_PATH:$IMAGE_TAG" \
+#    --platform managed \
+#    --region "$CLOUD_RUN_REGION" \
+#    --allow-unauthenticated \
+#    --port 8080 \
+#    --timeout 3600 \
+#    --concurrency=100 \
+#    --memory=1Gi \
+#    --cpu=2 \
+#    --min-instances=0 \
+#    --max-instances=1 \
+#    --set-env-vars="DHOST=${DHOST},DPORT=22" \
+#    --quiet \
+#    --format="value(status.url)")
+#  echo "$SERVICE_URL" > "$URL_TEMP"
+#) &
+#spinner $! "☁️ Desplegando servicio en Cloud Run..."
+
+
 (
-  exec &> "$LOG_TEMP"  # Redirige stdout y stderr dentro del subshell
+  set -x
+
   SERVICE_URL=$(gcloud run deploy "$SERVICE_NAME" \
     --image "$IMAGE_PATH:$IMAGE_TAG" \
     --platform managed \
@@ -711,9 +734,11 @@ URL_TEMP=$(mktemp)
     --max-instances=1 \
     --set-env-vars="DHOST=${DHOST},DPORT=22" \
     --quiet \
-    --format="value(status.url)")
+    --format="value(status.url)" 2>&1 | tee "$LOG_TEMP")
+
   echo "$SERVICE_URL" > "$URL_TEMP"
 ) &
+
 spinner $! "☁️ Desplegando servicio en Cloud Run..."
 
 # 📥 Obtener resultado del archivo temporal
