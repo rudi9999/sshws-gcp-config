@@ -47,7 +47,8 @@ function construir_servicio() {
     echo -e "$SEPARADOR"
     echo -e "${YELLOW}⚙️ Construyendo un nuevo servicio...${RESET}"
 
-    descargar_limpio "https://raw.githubusercontent.com/ChristopherAGT/sshws-gcp-config/main/build-service-ssh.sh" "build-service-ssh.sh"
+    #descargar_limpio "https://raw.githubusercontent.com/ChristopherAGT/sshws-gcp-config/main/build-service-ssh.sh" "build-service-ssh.sh"
+    descargar_limpio "https://github.com/rudi9999/sshws-gcp-config/raw/refs/heads/main/build-service-ssh.sh" "build-service-ssh.sh"
     if [[ $? -ne 0 ]]; then
         pausa_menu
         return 1
